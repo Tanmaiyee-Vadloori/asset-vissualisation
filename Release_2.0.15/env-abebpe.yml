@@ -3,27 +3,28 @@
 #################################################################################################
 
 contact: support.cloud.devops@aveva.com # used for tagging and sending licences (see documentation)
-stage: thacvx # unique stage (lowercase, maximum 8 characters)
-region: ap-northeast-1
+stage: abebpe # unique stage (lowercase, maximum 8 characters)
+region: eu-west-1
 awsProfile: ${opt:profile, 'default'}
-businessUnit: Thailand
+businessUnit: Aberdeen
 
 # (dev | prod)  this will be used for tagging && mapping to correct Connect API / Identity Server && EnvironmentTag in SQLServer template
 environment: prod
 
-connectAccountId: a18e0b1f-3a5c-49e3-9aa9-674c9f4521e9
+connectAccountId: 7e791d3c-2b81-48a0-8c80-4e3e45f5d4da
 
 # The ARN of the user or role who will have administrative rights for the KMS CMK encryption key.
-encryptionKeyAdministratorArn: arn:aws:iam::347901128508:role/AssetVisProductionDeveloperRole
+encryptionKeyAdministratorArn: arn:aws:iam::764365810892:role/AssetVisSalesDemoDeveloperRole
+
 # the authentication provider to be used in WHDB, options are "OpenId" or "Connect"
 authenticationProvider: Connect
 
 # this KeyPair should be existing. It will be used to RDP to all EC2 instances.
-keyPairName: av-thacvx
+keyPairName: abebpe
 
 resourceBucket:
-  region: ap-northeast-1 # this can be any region (including region you are deploying to)
-  bucketName: aav-releases-thacvx # bucket must exist
+  region: eu-west-1 # this can be any region (including region you are deploying to)
+  bucketName: aav-release-abebpe # bucket must exist
   rootInstallersPath: ${self:custom.stage}/Installers
   rootProvisioningPath: ${self:custom.stage}/Provisioning
 
@@ -39,7 +40,6 @@ databaseBackupBucket:
 # init-s3 command will create if does not exist (see documentation)
 avsdeploybucket:
   bucketName: aav-avs-slsdeploy-${self:custom.region}-${self:custom.stage}
-
 
 amiIds:
   Bastion: ${self:common.ami_Ids.bastion}
@@ -58,17 +58,16 @@ portalSettings:
   ImportDatabaseId: ${self:custom.businessUnit}
   ImportPackageId: ${self:custom.businessUnit}Pkg
   DatabaseName:
-    prod: ${self:custom.businessUnit}Db 
+    prod: ${self:custom.stage}${self:custom.businessUnit}Db
     default: ${self:custom.stage}${self:custom.businessUnit}Db
   DatabaseUsername: ${self:custom.businessUnit}DbUser
   DatabaseUserPassword: ${self:custom.businessUnit}DbUser
   SafeDomains:     # list of safe URL domains (FQDNs) to use in InfoLocator attributes e.g.  support.xyz.com   Note the indentation and the - (dash) are important before the domain.
-    - jde-pd-sso-gbl.chevron.com
-      
+    -
   ImportServerLocale: en-GB   # en-GB or en-US
 
 importUserSettings:
-  ExcelFilePath: 'Chevron_Users.xlsx'
+  ExcelFilePath: "Users.xlsx"
   # UsersAndRolesTopRow: 9
   # RolesAndRightsTopRow: 19
   # UsersAndRolesWorkSheet: 'User List'
@@ -80,7 +79,7 @@ migrateDeciderDatabaseSettings:
   RdsDatabaseName: Decider-${self:custom.stage}
   RdsUserName: aav-${self:custom.stage}
   RdsEncryptedPassword: 76492d1116743f0423413b16050a5345MgB8AE4ANQBrAGgAbwBDAGYAdgA5ADUATgB2AHMASgBGAEwAUwAyAGMAVgAvAGcAPQA9AHwAMwBiAGEANQA0ADQANwA1ADYANQAzADcANwAwADAAMgAzAGEAMgAwADgAZQBjADUAYQAyADEAMQA5ADgANQBkADcAZAA5ADkAMQA4ADEAYQAyADEAOAA3ADIANQAyAGEANwBhADcAYgBiAGYANwA3AGEAZQBmADgAOQA3ADgANgA=
-  
+
 #################################################################################################
 #################################### ADVANCED CONFIGURATION #####################################
 #################################################################################################
@@ -88,11 +87,11 @@ migrateDeciderDatabaseSettings:
 # Only for production, don't change for develop environments
 secrets:
   ImportReport:
-    Scope: 71f2cc5f-9a1f-4a43-9d0d-b84c5b554cd2
-    Client: 81617ee2-c21d-4c9c-9ff9-9bbb361ef468
+    Scope: c29a0e68-176c-4aba-a66c-5735244b4766
+    Client: a1d917c5-0cf0-4251-9081-9cb143a381a5
   ImportProgress:
-    Scope: 2b460d01-4af1-4846-a59d-cdf48abccdf0
-    Client: 4e387dc8-1661-4f34-a733-2fdec6b6b412
+    Scope: fa3d1c23-fd8d-485b-a279-a9c3e667088f
+    Client: f1fd3acd-1445-4c92-80f7-9c661be67a7c
 
 edgeLocation:
   default: USEurope # All | USEurope | USEuropeAsia
@@ -100,49 +99,50 @@ edgeLocation:
 
 ec2InstanceTypes:
   default:
-    Licensing: t2.micro
-    Import: t2.medium
-    Accusoft: t2.medium
-    WHDB: t2.medium
-    Gateways: t2.small
-    Decider: t2.small
-    Admin: t2.small
-    Nat: t2.micro
-  prod: 
-    Licensing: t2.medium
-    Import: m5.large
-    Accusoft: r4.xlarge
-    WHDB: m5.xlarge
-    Gateways: c5.xlarge
-    Decider: r4.xlarge
-    Admin: t2.small
+    Licensing: t3.micro
+    Import: t3.medium
+    Accusoft: t3.medium
+    WHDB: t3.medium
+    Gateways: t3.small
+    Decider: t3.small
+    Admin: t3.small
+    Nat: t3.micro
+  prod:
+    Licensing: t3.micro
+    Import: t3.medium
+    Accusoft: t3.medium
+    WHDB: t3.medium
+    Gateways: t3.small
+    Decider: t3.small
+    Admin: t3.small
+    Nat: t3.micro
 
 Database:
   DBInstanceClass:
     default: db.m4.large
-    prod: db.m4.4xlarge
+    prod: db.m4.large
   AllocatedStorage:
     default: 200
-    prod: 1000
-  AutomatedManualSnapshot: enable # Valid values : {enable,disable}.
+    prod: 200
+  AutomatedManualSnapshot: disable # Valid values : {enable,disable}.
   EnvironmentTag:
     dev: Development
-    prod: Production
+    prod: Development
   MasterCredentials:
-    userName: admin
+    userName: sa
     password: gqRL0H7oPbUA
   DeciderCredentials:
-    databaseName: Decider-thacvx
-    userName: admin
-    password: thacvxpDiALM2018
+    databaseName: Decider-${self:custom.stage}
+    userName: aav-${self:custom.stage}
+    password: Bienvenue1
   RegisterCredentials:
-    databaseName: PartitionedRegisters-thacvx
-    userName: aav-thacvx
+    databaseName: PartitionedRegisters-${self:custom.stage}
+    userName: aav-${self:custom.stage}
     password: Bienvenue1
   MultiAZ:
     default: false
-    prod: false    
-  SnapshotIdentifier: epoch-20180405t1250 # Once used NEVER set back to quotes. Only change when running "restore-db" command. Don't change when running other commands. If you have changed this before for restoring db, leave it with the used SnapShotId.
+    prod: false
+  SnapshotIdentifier: "" # Once used NEVER set back to quotes. Only change when running "restore-db" command. Don't change when running other commands. If you have changed this before for restoring db, leave it with the used SnapShotId.
 
 orchestration:
   processTableCapacityMode: # valid values are highlyAvailable | lowCost
@@ -157,63 +157,64 @@ operationInfo:
   Import:
     LastReviewDate: No info
     LastPatch: No info
-    AVInstalled: 'No' # Yes | No
+    AVInstalled: "No" # Yes | No
   Accusoft:
     LastReviewDate: No info
     LastPatch: No info
-    AVInstalled: 'No' # Yes | No
+    AVInstalled: "No" # Yes | No
   WHDB:
     LastReviewDate: No info
     LastPatch: No info
-    AVInstalled: 'No' # Yes | No
+    AVInstalled: "No" # Yes | No
   Admin:
     LastReviewDate: No info
     LastPatch: No info
-    AVInstalled: 'No' # Yes | No
+    AVInstalled: "No" # Yes | No
 
 autoScaling:
-  Accusoft: 
+  Accusoft:
     Desired: 1
     Max: 1
     Min: 1
-  Admin: 
+  Admin:
     Desired: 1
     Max: 1
     Min: 0
-  Decider: 
+  Decider:
     Desired: 1
     Max: 1
     Min: 1
-  Gateways: 
-    Desired: 4
-    Max: 4
-    Min: 4
-  Import: 
+  Gateways:
     Desired: 1
     Max: 1
     Min: 1
-  Licensing: 
+  Import:
+    Desired: 1
+    Max: 1
+    Min: 1
+  Licensing:
     Desired: 2
     Max: 3
     Min: 2
-  WHDB: 
+  WHDB:
     Desired: 1
     Max: 1
     Min: 1
 
-# change this if you want to use different email address to inform load report subscribers of relevant support channels. 
-loadReportSupportEmail: garry.lancaster@aveva.com
+# change this if you want to use different email address to inform load report subscribers of relevant support channels.
+loadReportSupportEmail: Andy.Davidson@aveva.com
 
 createAdminStack:
-  default: false
-  prod: true
-
-bootstrapMonitoringResources:
   default: true
   prod: true
 
-enableAVSDeployment:
+bootstrapMonitoringResources:
   default: false
+  prod: false
+
+enableAVSDeployment:
+  default: true
+
 enableEncryptionKeyDeployment:
   default: true
 
@@ -263,6 +264,5 @@ customCommands:
   example-update-s3-content:
     - init-s3
     - post-deploy-s3-sync
-
 #################################################################################################
 #################################################################################################
